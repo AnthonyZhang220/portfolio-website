@@ -4,10 +4,10 @@ import Cookies from "js-cookie";
 
 
 const supabaseUrl = "https://rwiqzdgvyuezupoxelra.supabase.co"
-const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
+const supabaseKey = process.env.REACT_APP_SUPABASE_KEY || "";
 
 function useSupabaseClient() {
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
     const [data, setData] = useState({ like: 0, fav: 0 })
     const [error, setError] = useState(null)
     const [liked, setLiked] = useState(false);
@@ -16,23 +16,27 @@ function useSupabaseClient() {
 
     useEffect(() => {
         const getCount = async () => {
-            const { count: likeCount, error: likeError } = await supabase.from("like").select("*", { count: "exact", head: true })
-            setData((prevData) => ({ ...prevData, like: likeCount }))
-            if (likeError) {
-                setError({ message: likeError.message + " like count. Please contact me at anthonyzhang1997@gmail.com." })
-            }
+            if (!supabase) {
+                setError({ message: "Supabase client is not initialized. " })
+                return;
+            } else {
+                const { count: likeCount, error: likeError } = await supabase.from("like").select("*", { count: "exact", head: true })
+                setData((prevData) => ({ ...prevData, like: likeCount }))
+                if (likeError) {
+                    setError({ message: likeError.message + " like count. Please contact me at anthonyzhang1997@gmail.com." })
+                }
 
-            const { count: favCount, error: favError } = await supabase.from("fav").select("*", { count: "exact", head: true })
+                const { count: favCount, error: favError } = await supabase.from("fav").select("*", { count: "exact", head: true })
 
-            setData((prevData) => ({ ...prevData, fav: favCount }))
-            if (favError) {
-                setError({ message: favError.message + " favorite count. Please contact me at anthonyzhang1997@gmail.com." })
+                setData((prevData) => ({ ...prevData, fav: favCount }))
+                if (favError) {
+                    setError({ message: favError.message + " favorite count. Please contact me at anthonyzhang1997@gmail.com." })
 
+                }
             }
         };
-
         getCount()
-    }, [])
+    }, [supabase])
 
     const incrementUpdate = async (type) => {
         const like = Cookies.get("like");
