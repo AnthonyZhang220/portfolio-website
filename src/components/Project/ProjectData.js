@@ -125,7 +125,6 @@ export const projectdata = [
 		thumbnails: "assets/images/laoma.png",
 		screenshots: [
 			"assets/project_images/laoma_hero.png",
-			"assets/project_images/laoma.gif",
 			"assets/project_images/laoma_menu.png",
 			"assets/project_images/laoma_info.png",
 			"assets/project_images/laoma_checkout.png",

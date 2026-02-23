@@ -5,9 +5,9 @@ import Cookies from "js-cookie";
 
 const supabaseUrl = "https://rwiqzdgvyuezupoxelra.supabase.co"
 const supabaseKey = process.env.REACT_APP_SUPABASE_KEY || "";
+const supabase = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
 
 function useSupabaseClient() {
-    const supabase = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
     const [data, setData] = useState({ like: 0, fav: 0 })
     const [error, setError] = useState(null)
     const [liked, setLiked] = useState(false);
@@ -36,7 +36,7 @@ function useSupabaseClient() {
             }
         };
         getCount()
-    }, [supabase])
+    }, [])
 
     const incrementUpdate = async (type) => {
         const like = Cookies.get("like");
